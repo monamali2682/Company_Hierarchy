@@ -37,5 +37,9 @@ public class Employee {
     public String toString() {
         return "Employee [name=" + name + ", gender=" + gender + "]";
     }   
+    public void assignManager(Employee employee){
+        this.isManager=true;
+    }
+    
     
 }
