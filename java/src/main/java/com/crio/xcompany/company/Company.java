@@ -58,26 +58,55 @@ public class Company{
     }
     public void deleteEmployee(String employeeName){
         
-        // 
+        Employee emp = employeeBook.get(employeeName);
+        if(emp==null){
+            return;
+        }
+        Employee mngr= emp.manager;
+        if(emp.isManager){
+            for(Employee reportee:emp.reportees){
+                if(mngr!=null){
+                    reportee.manager=mngr;
+                    mngr.reportees.add(reportee);
+                }
+                else{
+                    reportee.manager=null;
+                }
+            }
+        }
+        if(mngr!=null){
+            mngr.reportees.remove(emp);
+        } 
         employeeBook.remove(employeeName);
     }
+
     public List<List<Employee>> getEmployeeHierarchy(String managerName){
         Employee mngr = employeeBook.get(managerName);
         List<List<Employee>> ans = new ArrayList<>();
         List<Employee> arlist=new ArrayList<>();
         arlist.add(mngr);
         ans.add(arlist);
-        ans.add(mngr.reportees);
-        List<Employee> arl = new ArrayList<>();
-        for(Employee emp: mngr.reportees){
-            if(emp.isManager){
-                arl.addAll(emp.reportees);
-            }
-        }
-        if(arl.size()!=0){
-            ans.add(arl);
+        if(mngr.isManager){
+            ans.add(mngr.reportees); 
+            traverseTree(ans, mngr.reportees);
         }
         return ans;
+    }
+
+    public void traverseTree(List<List<Employee>> ans, List<Employee> reportees){
+        List<Employee> arlist=new ArrayList<>();
+        for(Employee em:reportees){
+            if(em.isManager){
+                arlist.addAll(em.reportees);
+            }
+        }
+        if(arlist.size()!=0){
+            ans.add(arlist);
+            traverseTree(ans, arlist);
+        }
+        else{
+            return;
+        }  
     }
 
 }
