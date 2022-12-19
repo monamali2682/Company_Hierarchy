@@ -59,10 +59,20 @@ public class Company{
     public void deleteEmployee(String employeeName){
         Employee emp = employeeBook.get(employeeName);
         Employee mngr= emp.manager;
+        
         if(emp.isManager){
             for(Employee reportee:emp.reportees){
-                reportee.manager=null;
+                if(mngr!=null){
+                    reportee.manager=mngr;
+                    mngr.reportees.add(reportee);
+                }
+                else{
+                    reportee.manager=null;
+                }
             }
+        }
+        if(mngr!=null){
+            mngr.reportees.remove(emp);
         }
         // 
         employeeBook.remove(employeeName);
